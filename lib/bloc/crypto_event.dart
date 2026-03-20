@@ -5,7 +5,9 @@ class FetchCryptoData extends CryptoEvent {}
 class FilterGainers extends CryptoEvent {}
 
 class ResetFilters extends CryptoEvent {}
+class FilterFallEvent extends CryptoEvent {}
 
+class FilterTop10Event extends CryptoEvent {}
 class ToggleFavorite extends CryptoEvent {
   final String id;
   ToggleFavorite(this.id);

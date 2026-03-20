@@ -8,7 +8,8 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
   final CryptoRepository cryptoRepository;
 
   List<CryptoModel> _originalList = [];
-
+  List<CryptoModel> allCoins = [];
+  
   CryptoBloc(this.cryptoRepository) : super(const CryptoState()) {
     on<FetchCryptoData>((event, emit) async {
       final localData = cryptoRepository.getLocalData();
@@ -30,6 +31,21 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       try {
         final data = await cryptoRepository.fetchCryptoData();
         _originalList = data;
+       on<FilterFallEvent>((event, emit) {
+  final filtered = allCoins
+      .where((coin) => coin.changePercent < 0)
+      .toList();
+
+  emit(CryptoLoaded(filtered));
+});
+
+on<FilterTop10Event>((event, emit) {
+  final sorted = List<CryptoModel>.from(allCoins)
+    ..sort((a, b) => b.price.compareTo(a.price));
+
+  emit(CryptoLoaded(sorted.take(10).toList()));
+});
+        
         emit(state.copyWith(isLoading: false, cryptoList: data));
       } catch (e) {
         emit(

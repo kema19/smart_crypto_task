@@ -31,6 +31,7 @@ class CryptoPage extends StatelessWidget {
         },
         builder: (context, state) {
           var displayList = state.cryptoList;
+
           if (state.showOnlyFavorites) {
             displayList = displayList.where((c) {
               return state.favoriteIds.contains(c.id);
@@ -45,7 +46,10 @@ class CryptoPage extends StatelessWidget {
             children: [
               if (state.isLoading && state.cryptoList.isNotEmpty)
                 LinearProgressIndicator(),
+
               SizedBox(height: 10),
+
+              // 🔥 ОБНОВЛЕННЫЙ БЛОК КНОПОК
               Wrap(
                 spacing: 8,
                 children: [
@@ -54,6 +58,18 @@ class CryptoPage extends StatelessWidget {
                       context.read<CryptoBloc>().add(FilterGainers());
                     },
                     child: Text('Рост'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<CryptoBloc>().add(FilterFallEvent());
+                    },
+                    child: Text('Падение'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<CryptoBloc>().add(FilterTop10Event());
+                    },
+                    child: Text('Топ-10'),
                   ),
                   ElevatedButton(
                     onPressed: () {
@@ -69,6 +85,7 @@ class CryptoPage extends StatelessWidget {
                   ),
                 ],
               ),
+
               Expanded(
                 child: ListView.builder(
                   padding: EdgeInsets.symmetric(horizontal: 10),
@@ -89,8 +106,8 @@ class CryptoPage extends StatelessWidget {
                               style: TextStyle(
                                 color:
                                     double.parse(crypto.changePercent24Hr) >= 0
-                                    ? Colors.green
-                                    : Colors.red,
+                                        ? Colors.green
+                                        : Colors.red,
                               ),
                             ),
                             IconButton(
@@ -100,7 +117,9 @@ class CryptoPage extends StatelessWidget {
                                 );
                               },
                               icon: Icon(
-                                isFavorite ? Icons.star : Icons.star_border,
+                                isFavorite
+                                    ? Icons.star
+                                    : Icons.star_border,
                                 color: isFavorite ? Colors.amber : null,
                               ),
                             ),
